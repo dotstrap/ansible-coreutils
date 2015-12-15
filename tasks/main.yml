@@ -31,8 +31,9 @@
       state: present
       insertbefore: BOF
       marker: "#####=== {mark} Ansible managed pathmunge ===#####"
+      # FIXME: "{{ item }}" is not expanding in block for blockinfile
       block: |
-        #!/usr/bin/env bash
+        #!/usr/bin/env {{ item }}
 
         pathmunge () {
           case ":${PATH}:" in
