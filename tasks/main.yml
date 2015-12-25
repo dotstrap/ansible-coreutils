@@ -1,91 +1,10 @@
 ---
 # tasks file for coreutils
 
-# install
-- block:
-  - name: update homebrew
-    homebrew: update_homebrew=yes
-
-  - name: install coreutils
-    homebrew:
-      name: "{{ item }}"
-      state: "{{ install_state }}"
-      install_options: "{{ item }}"
-    with_items: "{{ coreutils }}"
-    tags: install
+- name: setup | install
+  include: install.yml
   when: ansible_distribution == 'MacOSX'
-  tags:
-    - bootstrap
-    - update
 
-# configure coreutils
-- block:
-  - name: setup configuration
-    file: dest="{{ dotstrap_config_home }}" state=directory
-
-  - name: configure pathmunge shell function
-    blockinfile:
-      dest: "{{ dotstrap_config_home }}/config.{{ item }}"
-      create: yes
-      backup: no
-      state: present
-      insertbefore: BOF
-      marker: "#####=== {mark} Ansible managed pathmunge ===#####"
-      # FIXME: "{{ item }}" is not expanding in block for blockinfile
-      block: |
-        #!/usr/bin/env {{ item }}
-
-        pathmunge () {
-          case ":${PATH}:" in
-            *:"$1":*)
-              ;;
-            *)
-              if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-              else
-                PATH=$1:$PATH
-              fi
-          esac
-        }
-
-        manpathmunge () {
-          case ":${MANPATH}:" in
-            *:"$1":*)
-              ;;
-            *)
-              if [ "$2" = "after" ] ; then
-                MANPATH=$MANPATH:$1
-              else
-                MANPATH=$1:$MANPATH
-              fi
-          esac
-        }
-    with_items:
-      - bash
-      - zsh
-
-  - name: determine homebrew prefix
-    command: "brew --prefix"
-    register: brew_prefix
-
-  - name: configure PATH for coreutils
-    blockinfile:
-      dest: "{{ dotstrap_config_home }}/config.{{ item }}"
-      state: "{{ configuration_state }}"
-      create: yes
-      backup: no
-      marker: "{{ marker }}"
-      block: |
-        pathmunge "{{ brew_prefix.stdout }}/opt/coreutils"
-        manpathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnuman"
-        export PATH=$PATH
-        export MANPATH=$MANPATH
-    with_items:
-      - bash
-      - zsh
-  # when: (ansible_user_shell | match(".*bash|zsh|sh")) and (ansible_distribution == 'MacOSX')
+- name: setup | configure
+  include: coreutils.yml
   when: ansible_distribution == 'MacOSX'
-  tags:
-    - bootstrap
-    - update
-    - configure

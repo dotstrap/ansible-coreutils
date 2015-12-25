@@ -1,0 +1,81 @@
+---
+
+# configure coreutils
+- block:
+  - name: setup | dotstrap configuration directory
+    file: dest="{{ dotstrap_config_dir }}" state=directory
+
+  - name: configure | pathmunge shell function
+    blockinfile:
+      dest: "{{ dotstrap_config_dir }}/config.{{ item }}"
+      create: yes
+      backup: no
+      state: present
+      insertbefore: BOF
+      marker: "#####=== {mark} Ansible managed pathmunge ===#####"
+      # FIXME: "{{ item }}" is not expanding in block for blockinfile
+      block: |
+        #!/usr/bin/env {{ item }}
+
+        pathmunge () {
+          case ":${PATH}:" in
+            *:"$1":*)
+              ;;
+            *)
+              if [ "$2" = "after" ] ; then
+                PATH=$PATH:$1
+              else
+                PATH=$1:$PATH
+              fi
+          esac
+        }
+
+        manpathmunge () {
+          case ":${MANPATH}:" in
+            *:"$1":*)
+              ;;
+            *)
+              if [ "$2" = "after" ] ; then
+                MANPATH=$MANPATH:$1
+              else
+                MANPATH=$1:$MANPATH
+              fi
+          esac
+        }
+    with_items:
+      - bash
+      - sh
+      - zsh
+
+  - name: setup | determine homebrew prefix
+    command: "brew --prefix"
+    register: brew_prefix
+
+  - name: configure | bash/sh/zsh | PATH
+    blockinfile:
+      dest: "{{ dotstrap_config_dir }}/config.{{ item }}"
+      state: "{{ configuration_state }}"
+      create: yes
+      backup: no
+      marker: "{{ marker }}"
+      block: |
+        pathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin"
+        manpathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnuman"
+        export PATH=$PATH
+        export MANPATH=$MANPATH
+    with_items:
+      - bash
+      - sh
+      - zsh
+  tags:
+    - bootstrap
+    - update
+    - configure
+
+- name: configure | fish | PATH
+  command: fish -c "set -U fish_user_paths {{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin $fish_user_paths"
+  when: ansible_user_shell | match(".*fish")
+  tags:
+    - bootstrap
+    - update
+    - configure
