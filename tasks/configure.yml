@@ -1,6 +1,6 @@
 ---
-
 # configure coreutils
+
 - block:
   - name: setup | dotstrap configuration directory
     file: dest="{{ dotstrap_config_dir }}" state=directory
@@ -57,7 +57,7 @@
       state: "{{ configuration_state }}"
       create: yes
       backup: no
-      marker: "{{ marker }}"
+      marker: "{{ coreutils_marker }}"
       block: |
         pathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin"
         manpathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnuman"

@@ -1,18 +1,17 @@
 ---
-
 # install coreutils
+
 - block:
-  - name: update homebrew
-    homebrew: update_homebrew=yes
+  # - name: update homebrew
+    # homebrew: update_homebrew=yes
 
   - name: install coreutils
     homebrew:
       name: "{{ item }}"
       state: "{{ install_state }}"
       install_options: "{{ item }}"
-    with_items: "{{ coreutils }}"
+    with_items: "{{ coreutils_name }}"
     tags: install
-  when: ansible_distribution == 'MacOSX'
   tags:
     - bootstrap
     - update
