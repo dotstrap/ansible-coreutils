@@ -9,10 +9,8 @@ galaxy_info:
       versions:
         - any
   galaxy_tags:
-    - dotfiles
-    - dotstrap
-    - homebrew
-    - system
+    - coreutils
     - GNU
+    - dotfiles
 
 dependencies: []
