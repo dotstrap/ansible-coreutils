@@ -28,6 +28,12 @@ Example Playbook
          - { role: mkwmms.coreutils }
 ```
 
+Notes
+-----
+
+__Warning__: This role modifies your default shell configuration file, eg.
+`~/.bash_profile`, `~/.zshrc` or `~/.config/fish/config.fish`.
+
 License
 -------
 
