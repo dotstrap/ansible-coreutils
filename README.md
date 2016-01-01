@@ -1,6 +1,6 @@
 ansible-coreutils
 =================
-<!-- [![Build Status](https://travis-ci.org/mkwmms/ansible-coreutils.svg)](https://travis-ci.org/mkwmms/coreutils) -->
+[![Build Status](https://travis-ci.org/mkwmms/ansible-coreutils.svg)](https://travis-ci.org/mkwmms/ansible-coreutils)
 
 Install & configure GNU coreutils on OS X
 
