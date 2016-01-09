@@ -2,12 +2,21 @@ ansible-coreutils
 =================
 [![Build Status](https://travis-ci.org/mkwmms/ansible-coreutils.svg)](https://travis-ci.org/mkwmms/ansible-coreutils)
 
-Install & configure GNU coreutils on OS X
+Install & configure [GNU] [coreutils] on [OS X].
+
+See also: [mkwmms.gnu-tools](https://github.com/mkwmms/ansible-gnu-tools)
+
+Installation
+------------
+
+```
+ansible-galaxy install mkwmms.coreutils
+```
 
 Requirements
 ------------
 
-[homebrew] and the latest XCode tools.
+[homebrew] and the latest Xcode tools.
 
 Role Variables
 --------------
@@ -23,9 +32,9 @@ Example Playbook
 ----------------
 
 ```
-    - hosts: servers
+    - hosts: all
       roles:
-         - { role: mkwmms.coreutils }
+         - role: mkwmms.coreutils
 ```
 
 Notes
@@ -46,10 +55,23 @@ Author Information
 
 
 [@mkwmms]: https://github.com/mkwmms
-[dotstrap]: https://github.com/mkwmms/dotstrap
-[homebrew]: https://github.com/Homebrew/homebrew
-[files]: files/
+[GNU]: http://www.gnu.org/
+[OS X]: http://www.apple.com/osx/
+[Xcode]: https://developer.apple.com/xcode/
+[aura]: https://github.com/aurapm/aura
+[bash]: https://www.gnu.org/software/bash/manual/bashref.html
+[coreutils]: http://www.gnu.org/software/coreutils/
 [default variables]: defaults/main.yml
-[variables]: vars/main.yml
-[zsh]: http://zsh.sourceforge.net
+[dotstrap]: https://github.com/mkwmms/dotstrap
+[fasd]: https://github.com/clvv/fasd
+[files]: files/
 [fish]: http://fishshell.com/
+[homebrew]: https://github.com/Homebrew/homebrew
+[neovim]: https://github.com/neovim/neovim
+[pip]: https://github.com/pypa/pip
+[pure]: https://github.com/sindresorhus/pure
+[speedcola]: https://github.com/mkwmms/speedcola
+[variables]: vars/main.yml
+[yaourt]: https://github.com/archlinuxfr/yaourt
+[z]: https://github.com/rupa/z
+[zsh]: http://zsh.sourceforge.net
