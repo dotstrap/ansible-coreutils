@@ -76,7 +76,7 @@
     - update
 
 - name: fish | configure | PATH
-  command: fish -c "set -U fish_user_paths {{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin $fish_user_paths"
+  command: fish -c "set -Ux fish_user_paths {{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin $fish_user_paths"
   when: (ansible_distribution == 'MacOSX') and (ansible_user_shell | match(".*\/fish"))
   tags:
     - bootstrap
