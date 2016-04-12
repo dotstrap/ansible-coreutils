@@ -1,16 +1,16 @@
 ansible-coreutils
 =================
-[![Build Status](https://travis-ci.org/mwilliammyers/ansible-coreutils.svg)](https://travis-ci.org/mwilliammyers/ansible-coreutils)
+[![Build Status](https://travis-ci.org/dotstrap/ansible-coreutils.svg)](https://travis-ci.org/dotstrap/ansible-coreutils)
 
 Install & configure [GNU] [coreutils] on [OS X].
 
-See also: [mwilliammyers.gnu-tools](https://github.com/mwilliammyers/ansible-gnu-tools)
+See also: [dotstrap.gnu-tools](https://github.com/dotstrap/ansible-gnu-tools)
 
 Installation
 ------------
 
 ```
-ansible-galaxy install mwilliammyers.coreutils
+ansible-galaxy install dotstrap.coreutils
 ```
 
 Requirements
@@ -34,7 +34,7 @@ Example Playbook
 ```
     - hosts: all
       roles:
-         - role: mwilliammyers.coreutils
+         - role: dotstrap.coreutils
 ```
 
 Notes
