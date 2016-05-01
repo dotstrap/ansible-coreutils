@@ -19,44 +19,6 @@
   when: ansible_distribution == 'MacOSX'
 
 - block:
-  - name: bash/zsh | configure | pathmunge shell function
-    blockinfile:
-      dest: "{{ shell_profile }}"
-      create: yes
-      backup: yes
-      state: present
-      insertbefore: BOF
-      marker: "#####=== {mark} Ansible managed pathmunge ===#####"
-      # FIXME: "{{ item }}" is not expanding in block for blockinfile
-      block: |
-        #!/usr/bin/env {{ ansible_user_shell_name }}
-
-        pathmunge () {
-          case ":${PATH}:" in
-            *:"$1":*)
-              ;;
-            *)
-              if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-              else
-                PATH=$1:$PATH
-              fi
-          esac
-        }
-
-        manpathmunge () {
-          case ":${MANPATH}:" in
-            *:"$1":*)
-              ;;
-            *)
-              if [ "$2" = "after" ] ; then
-                MANPATH=$MANPATH:$1
-              else
-                MANPATH=$1:$MANPATH
-              fi
-          esac
-        }
-
   - name: bash/zsh | configure | PATH
     blockinfile:
       dest: "{{ shell_profile }}"
@@ -65,10 +27,14 @@
       backup: no
       marker: "{{ coreutils_marker }}"
       block: |
-        pathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin"
-        manpathmunge "{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnuman"
-        export PATH=$PATH
-        export MANPATH=$MANPATH
+        coreutils_path="{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin"
+        if [[ "$PATH" != *$coreutils_path* ]]; then
+          export PATH="$coreutils_path:$PATH"
+        fi
+        coreutils_manpath="{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnuman"
+        if [[ "$PATH" != *$coreutils_manpath* ]]; then
+          export PATH="$coreutils_manpath::$PATH"
+        fi
   when: ansible_distribution == 'MacOSX'
   tags:
     - bootstrap
