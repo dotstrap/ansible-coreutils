@@ -5,11 +5,13 @@
 - name: install
   homebrew:
     name: "{{ coreutils_name }}"
-    state: "{{ install_state }}"
+    state: "{{ coreutils_install_state }}"
   when: ansible_distribution == 'MacOSX'
   tags:
     - bootstrap
+    - bootstrap_coreutils
     - install
+    - install_coreutils
 
 #####=== configure ===#####
 
@@ -21,8 +23,8 @@
 - block:
   - name: bash/zsh | configure | PATH
     blockinfile:
-      dest: "{{ shell_profile }}"
-      state: "{{ configuration_state }}"
+      dest: "{{ item.profile }}"
+      state: "{{ item.state }}"
       create: yes
       backup: no
       marker: "{{ coreutils_marker }}"
@@ -35,20 +37,38 @@
         if [[ "$PATH" != *$coreutils_manpath* ]]; then
           export PATH="$coreutils_manpath::$PATH"
         fi
-  when: ansible_distribution == 'MacOSX'
+    with_items:
+      - "{{ coreutils_bash_configuration }}"
+      - "{{ coreutils_zsh_configuration }}"
+  when: >
+    (ansible_distribution == 'MacOSX') and 
+    (coreutils_should_override == true)
   tags:
+    - bash
+    - zsh
     - bootstrap
+    - bootstrap_coreutils
     - configure
+    - configure_coreutils
     - update
+    - update_coreutils
 
+# TODO: add unconfiguring fish...
 - block:
   - name: fish | configure | PATH
-    command: fish -c "set -Ux fish_user_paths {{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin $fish_user_paths"
+    command: fish -c "set -Ux fish_user_paths {{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin"
     # trailing ':' is important; see https://github.com/fish-shell/fish-shell/issues/2090
   - name: fish | configure | MANPATH
     command: fish -c "set -Ux MANPATH '{{ brew_prefix.stdout }}/opt/coreutils/libexec/gnubin:'"
-  when: (ansible_distribution == 'MacOSX') and (ansible_user_shell | match(".*\/fish"))
+  when: >
+    (ansible_distribution == 'MacOSX') and 
+    (coreutils_fish_configuration.state == 'present') and 
+    (coreutils_should_override == true)
   tags:
+    - fish
     - bootstrap
+    - bootstrap_coreutils
     - configure
+    - configure_coreutils
     - update
+    - update_coreutils

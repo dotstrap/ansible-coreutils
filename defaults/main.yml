@@ -1,10 +1,19 @@
 ---
+coreutils_name: coreutils
+coreutils_install_state: present
 
-shell_profile: "{{ ((ansible_user_shell | basename) == 'bash') | ternary(bash_profile, zsh_profile) }}"
+# Should GNU coreutils come before system utilities in $PATH?
+coreutils_should_override: false
 
-install_state: present
-configuration_state: present
+coreutils_bash_configuration: 
+  profile: "{{ bash_profile }}"
+  state: "{{ (ansible_user_shell_name == 'bash') | ternary('present', 'absent') }}"
+
+coreutils_zsh_configuration: 
+  profile: "{{ zsh_profile }}"
+  state: "{{ (ansible_user_shell_name == 'zsh') | ternary('present', 'absent') }}"
+
+coreutils_fish_configuration: 
+  state: "{{ (ansible_user_shell_name == 'fish') | ternary('present', 'absent') }}"
 
 coreutils_marker: "#####=== {mark} Ansible managed GNU coreutils settings ===#####"
-
-coreutils_name: coreutils
